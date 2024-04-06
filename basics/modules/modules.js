@@ -5,4 +5,4 @@ function  b() {
     console.log('ami b');
 }
 
-module.exports = a;
+module.exports = {a:a, b:b, jo:'kii'};

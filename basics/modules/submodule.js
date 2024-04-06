@@ -1,3 +1,5 @@
-const ami = require('./submodule');
+const modules = require('./modules');
 
-ami.a();
+modules.a();
+modules.b();
+console.log(modules.jo);
