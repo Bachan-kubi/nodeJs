@@ -3,6 +3,8 @@ const port = 5000;
 
 const server = http.createServer(function(req, res){
     res.writeHead(200, {"Content-Type": "text/html"});
+    const url = req.url;
+    console.log(url)
     // if i set plain text in content type it will render all text as plain to ui. amazing
     // res.writeHead(200, {"Content-Type": "text/plain"}); Here we are responding differently to different incoming requests by using the req.url property.
 /* In every response, we are doing 3 things:
