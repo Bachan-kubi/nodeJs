@@ -7,11 +7,11 @@ const firstEvent = new EventEmitter();
 // });
 // 2
 
-firstEvent.on('userRegistered', (user)=>{
-    console.log('welcome', user.name);
+firstEvent.on('userRegistered', ({name})=>{
+    console.log('welcome', name);
 });
-firstEvent.on('userRegistered', (user)=>{
-    console.log('sent email to ', user.email);
+firstEvent.on('userRegistered', ({email})=>{
+    console.log('sent email to ', email);
 });
 
 

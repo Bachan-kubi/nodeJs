@@ -1,0 +1,131 @@
+🛒 Project: E-Commerce Order Processing System
+🔧 Features:
+User places an order.
+
+The system:
+
+Validates the order.
+
+Saves it to the database (simulated).
+
+Sends an email confirmation.
+
+Notifies inventory.
+
+Logs the transaction.
+
+🏗️ Folder Structure
+go
+Copy
+Edit
+ecommerce-app/
+│
+├── events/
+│   └── orderEvents.js
+│
+├── handlers/
+│   ├── emailHandler.js
+│   ├── inventoryHandler.js
+│   ├── logHandler.js
+│   └── saveHandler.js
+│
+├── services/
+│   └── orderService.js
+│
+├── app.js
+└── package.json
+1. 🔁 events/orderEvents.js
+js
+Copy
+Edit
+const EventEmitter = require('events');
+
+class OrderEmitter extends EventEmitter {}
+const orderEmitter = new OrderEmitter();
+
+module.exports = orderEmitter;
+2. ⚙️ Handlers
+handlers/emailHandler.js
+js
+Copy
+Edit
+const orderEmitter = require('../events/orderEvents');
+
+orderEmitter.on('orderPlaced', (order) => {
+  console.log(`📧 Email sent to ${order.userEmail} for Order ID: ${order.id}`);
+});
+handlers/inventoryHandler.js
+js
+Copy
+Edit
+const orderEmitter = require('../events/orderEvents');
+
+orderEmitter.on('orderPlaced', (order) => {
+  console.log(`📦 Inventory updated: ${order.items.length} items deducted for Order ID: ${order.id}`);
+});
+handlers/logHandler.js
+js
+Copy
+Edit
+const orderEmitter = require('../events/orderEvents');
+
+orderEmitter.on('orderPlaced', (order) => {
+  console.log(`📝 Order logged: ID ${order.id}, Total: $${order.total}`);
+});
+handlers/saveHandler.js
+js
+Copy
+Edit
+const orderEmitter = require('../events/orderEvents');
+
+orderEmitter.on('orderPlaced', (order) => {
+  console.log(`💾 Order saved to DB: ${JSON.stringify(order)}`);
+});
+3. 🧠 services/orderService.js
+js
+Copy
+Edit
+const orderEmitter = require('../events/orderEvents');
+const { v4: uuidv4 } = require('uuid');
+
+function placeOrder(userEmail, items) {
+  const order = {
+    id: uuidv4(),
+    userEmail,
+    items,
+    total: items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    createdAt: new Date(),
+  };
+
+  console.log('✅ Order received, processing...');
+
+  // Emit the event to trigger all handlers
+  orderEmitter.emit('orderPlaced', order);
+}
+
+module.exports = placeOrder;
+You’ll need to install uuid for generating unique order IDs:
+
+bash
+Copy
+Edit
+npm install uuid
+4. 🚀 app.js (Main file)
+js
+Copy
+Edit
+require('./handlers/emailHandler');
+require('./handlers/inventoryHandler');
+require('./handlers/logHandler');
+require('./handlers/saveHandler');
+
+const placeOrder = require('./services/orderService');
+
+placeOrder('john@example.com', [
+  { name: 'Laptop', price: 1000, quantity: 1 },
+  { name: 'Mouse', price: 25, quantity: 2 }
+]);
+
+placeOrder('jane@example.com', [
+  { name: 'Phone', price: 600, quantity: 1 }
+]);
